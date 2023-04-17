@@ -13,26 +13,30 @@ class Dataset:
     df : pd.DataFrame = None
     original_df : pd.DataFrame = None
     base_path = str(Path(os.path.abspath(os.getcwd())))
+
+    def __init__(self, base_path=None):
+        if base_path is not None:
+            self.base_path = base_path
             
-    def addDataset(self, filePath, name=''):
+    def addDataset(self, filePath : str, separator = ';', name='') -> None:
+        self.df = utils.createDataframe(self.base_path + filePath, separator=separator)
         
-        df = original_df = utils.creteDataframe(filePath)
-        utils.cleanDataframe(df)
-        if df is None:
+        if self.df is None:
             print('Error: File not found or not valid')
         else:
             if self.dataframes.get(name) is None:
-                self.dataframes[name] = df
+                self.dataframes[name] = self.df
+                print('Added ' + filePath + ' to dataset')
             else: 
-                self.dataframes[name].append(df)
-            print('Added ' + filePath + ' to dataset') 
+                print('Warning: Dataset name already exists')
+             
             
-    def createDataset(self, files):
+    def createDataset(self, files : list) -> None:
         frames = []
         for file in files:
-            mobility_csv = self.base_path + "/data/" + file
-            mob_df = pd.read_csv(mobility_csv, sep=";")
-            frames.append(mob_df)
+            csv = self.base_path + file
+            df = pd.read_csv(csv, sep=";")
+            frames.append(df)
         self.df = pd.concat(frames) 
         self.df.drop_duplicates(inplace=True)
         

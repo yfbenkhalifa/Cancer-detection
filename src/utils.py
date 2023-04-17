@@ -6,10 +6,10 @@ class Utilities:
         pass
     
     @staticmethod
-    def creteDataframe(file):
+    def createDataframe(file, separator = ';'):
         format = file.split('.')[-1]
         if format == 'csv':
-            return pandas.DataFrame(pandas.read_csv(file, header = 0))
+            return pandas.DataFrame(pandas.read_csv(file, sep = separator, header = 0))
         elif format == 'xlsx':
             return pandas.read_excel(file, engine="openpyxl")
         elif format == 'tsv':
