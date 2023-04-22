@@ -6,14 +6,14 @@ class Utilities:
         pass
     
     @staticmethod
-    def createDataframe(file, separator = ';'):
-        format = file.split('.')[-1]
+    def createDataframe(filepath : str , separator = ';') -> pandas.DataFrame:
+        format = filepath.split('.')[-1]
         if format == 'csv':
-            return pandas.DataFrame(pandas.read_csv(file, sep = separator, header = 0))
+            return pandas.DataFrame(pandas.read_csv(filepath, sep = separator, header = 0))
         elif format == 'xlsx':
-            return pandas.read_excel(file, engine="openpyxl")
+            return pandas.read_excel(filepath, engine="openpyxl")
         elif format == 'tsv':
-            return pandas.DataFrame(pandas.read_csv(file, sep='\t', header = 0))
+            return pandas.DataFrame(pandas.read_csv(filepath, sep='\t', header = 0))
         else:
             return None
             
@@ -31,7 +31,7 @@ class Utilities:
         return dataframes
     
     @staticmethod
-    def cleanDataframe(dataframe:pandas.DataFrame):
+    def cleanDataframe(dataframe:pandas.DataFrame, ):
         dataframe.dropna(axis=0, how='any', inplace=True)
         dataframe.dropna(axis=1, how='all', inplace=True)
         return dataframe
