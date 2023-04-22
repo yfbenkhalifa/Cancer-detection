@@ -31,13 +31,12 @@ class Dataset(Dataset):
     def __init__(self, filePath : str, label_column : list, separator = ';', name=''):
         self.dataframe = utils.createDataframe(filepath=filePath, 
                                                separator=separator)
-        self.label_columns = label_column
+        self.label_column = label_column
         self.encoders = {}
+        self.label_dicts = {}
 
-    def init_label_dictionary(self, label_column, label_values):
-        for column in self.label_columns:
-            labels = self.dataframe[column].unique()
-            self.label_dictionary[column] = {}
+    def init_label_dictionary(self, label_column : str | int, label_dict : dict):
+        self.label_dicts[label_column] = label_dict
 
 
     def __len__(self):

@@ -5,7 +5,7 @@ import tqdm
 import torch.nn as nn
 
 def accuracy_fn(y_true:torch.tensor, y_pred:torch.tensor) -> float:
-    correct = torch.eq(y_true, y_pred).sum().item()
+    correct = torch.eq(y_true, y_pred).sum()
     acc = (correct / len(y_true)) * 100
     return acc
 
@@ -125,13 +125,27 @@ def train(model, optimizer, criterion, train_loader, val_loader, num_epochs, dev
         print(f'Epoch {e+0:03}: | Train Loss: {train_epoch_loss/len(train_loader):.5f} | Val Loss: {val_epoch_loss/len(val_loader):.5f} | Train Acc: {train_epoch_acc/len(train_loader):.3f}| Val Acc: {val_epoch_acc/len(val_loader):.3f}')
     return loss_stats, accuracy_stats
 
+class Multiclass(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.hidden = nn.Linear(4, 8)
+        self.act = nn.ReLU()
+        self.output = nn.Linear(8, 3)
+        
+    def forward(self, x):
+        x = self.act(self.hidden(x))
+        x = self.output(x)
+        return x
 
 class PCDModel_1(torch.nn.Module):
     def __init__(self, input_shape, output_shape) -> None:
         super().__init__()
         self.Layer_1 = torch.nn.Linear(in_features=input_shape, out_features=32)
+        self.Act_12 = nn.ReLU()
         self.Layer_2 = torch.nn.Linear(in_features=32, out_features=64)
+        self.Act_23 = nn.ReLU()
         self.Layer_3 = torch.nn.Linear(in_features=64, out_features=128)
+        self.Act_3Out = nn.ReLU()
         self.OutLayer = torch.nn.Linear(in_features=128, out_features=output_shape)
 
     def forward(self, x):
