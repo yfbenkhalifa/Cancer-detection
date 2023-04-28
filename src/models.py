@@ -125,6 +125,13 @@ def train(model, optimizer, criterion, train_loader, val_loader, num_epochs, dev
         print(f'Epoch {e+0:03}: | Train Loss: {train_epoch_loss/len(train_loader):.5f} | Val Loss: {val_epoch_loss/len(val_loader):.5f} | Train Acc: {train_epoch_acc/len(train_loader):.3f}| Val Acc: {val_epoch_acc/len(val_loader):.3f}')
     return loss_stats, accuracy_stats
 
+# class ModelCreator():
+#     @staticmethod 
+#     def createNN(input_size : int, output_size : int, hidden_layer: list):
+#         model = nn.Module
+#         for layer in hidden_layer:
+#             model.add_module(nn.Linear(in_features=))
+        
 class Multiclass(nn.Module):
     def __init__(self):
         super().__init__()
@@ -140,19 +147,21 @@ class Multiclass(nn.Module):
 class PCDModel_1(torch.nn.Module):
     def __init__(self, input_shape, output_shape) -> None:
         super().__init__()
-        self.Layer_1 = torch.nn.Linear(in_features=input_shape, out_features=32)
-        self.Act_12 = nn.ReLU()
-        self.Layer_2 = torch.nn.Linear(in_features=32, out_features=64)
-        self.Act_23 = nn.ReLU()
-        self.Layer_3 = torch.nn.Linear(in_features=64, out_features=128)
-        self.Act_3Out = nn.ReLU()
+        self.Layer_1 = torch.nn.Linear(in_features=input_shape, out_features=128)
+        self.Layer_2 = torch.nn.Linear(in_features=128, out_features=256)
+        self.Layer_3 = torch.nn.Linear(in_features=256, out_features=512)
+        self.Layer_4 = torch.nn.Linear(in_features=512, out_features=256)
+        self.Layer_5 = torch.nn.Linear(in_features=256, out_features=128)
         self.OutLayer = torch.nn.Linear(in_features=128, out_features=output_shape)
+        self.relu = nn.ReLU()
 
     def forward(self, x):
         return self.OutLayer(
-            self.Layer_3(
-            self.Layer_2(
-            self.Layer_1(x))))
+            self.relu(self.Layer_5(
+            self.relu(self.Layer_4(
+            self.relu(self.Layer_3(
+            self.relu(self.Layer_2(
+            self.relu(self.Layer_1(x)))))))))))
     
 class MulticlassClassification(nn.Module):
     def __init__(self, num_feature, num_class):
