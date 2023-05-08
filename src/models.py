@@ -132,6 +132,10 @@ def train(model, optimizer, criterion, train_loader, val_loader, num_epochs, dev
 #         for layer in hidden_layer:
 #             model.add_module(nn.Linear(in_features=))
         
+def toTensor(x : np.array, type : str = "float"):
+    if type == "float":
+        return torch.from_numpy(x).float()
+    
 class Multiclass(nn.Module):
     def __init__(self):
         super().__init__()
@@ -145,23 +149,35 @@ class Multiclass(nn.Module):
         return x
 
 class PCDModel_1(torch.nn.Module):
-    def __init__(self, input_shape, output_shape) -> None:
+    def __init__(self, input_shape, output_shape):
         super().__init__()
-        self.Layer_1 = torch.nn.Linear(in_features=input_shape, out_features=128)
-        self.Layer_2 = torch.nn.Linear(in_features=128, out_features=256)
-        self.Layer_3 = torch.nn.Linear(in_features=256, out_features=512)
-        self.Layer_4 = torch.nn.Linear(in_features=512, out_features=256)
-        self.Layer_5 = torch.nn.Linear(in_features=256, out_features=128)
-        self.OutLayer = torch.nn.Linear(in_features=128, out_features=output_shape)
-        self.relu = nn.ReLU()
+        self.linearBlock = nn.Sequential(
+            nn.Linear(in_features=input_shape, out_features=256),
+            nn.ReLU(),
+            nn.Linear(in_features=256, out_features=64),
+            nn.ReLU(),
+            nn.Linear(in_features=64, out_features=32),
+            nn.ReLU(),
+            nn.Linear(in_features=32, out_features=8),
+            nn.ReLU(),
+            nn.Linear(in_features=8, out_features=output_shape),
+
+            
+        )
+        self.initWeights()
+
+        
+    def initWeights(self):
+        for m in self.modules():
+            if isinstance(m, nn.Linear):
+                nn.init.kaiming_normal_(m.weight)
+                nn.init.zeros_(m.bias)
 
     def forward(self, x):
-        return self.OutLayer(
-            self.relu(self.Layer_5(
-            self.relu(self.Layer_4(
-            self.relu(self.Layer_3(
-            self.relu(self.Layer_2(
-            self.relu(self.Layer_1(x)))))))))))
+        x = self.linearBlock(x)
+        return x
+        
+
     
 class MulticlassClassification(nn.Module):
     def __init__(self, num_feature, num_class):
