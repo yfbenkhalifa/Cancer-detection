@@ -152,17 +152,13 @@ class PCDModel_1(torch.nn.Module):
     def __init__(self, input_shape, output_shape):
         super().__init__()
         self.linearBlock = nn.Sequential(
-            nn.Linear(in_features=input_shape, out_features=256),
+            nn.Linear(in_features=input_shape, out_features=32),
             nn.ReLU(),
-            nn.Linear(in_features=256, out_features=64),
+            nn.Linear(in_features=32, out_features=16),
             nn.ReLU(),
-            nn.Linear(in_features=64, out_features=32),
-            nn.ReLU(),
-            nn.Linear(in_features=32, out_features=8),
+            nn.Linear(in_features=16, out_features=8),
             nn.ReLU(),
             nn.Linear(in_features=8, out_features=output_shape),
-
-            
         )
         self.initWeights()
 
